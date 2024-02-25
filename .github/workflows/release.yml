@@ -1,0 +1,71 @@
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          zip -r sdk-cpp.zip src/*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: sdk-cpp-${{ github.sha }}.zip
+          path: sdk-cpp.zip
+
+  tar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          tar -czvf sdk-cpp.tar.gz src/*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: sdk-cpp-${{ github.sha }}.tar.gz
+          path: sdk-cpp.tar.gz
+
+  release:
+    needs:
+      - zip
+      - tar
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        extension:
+          - zip
+          - tar.gz
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: sdk-cpp-${{ github.sha }}.${{ matrix.extension }}
+          path: sdk-cpp
+
+      - run: |
+          cp CHANGELOG.md LICENSE README.md sdk-cpp/
+
+      - name: Pack artifact (zip)
+        if: startsWith(matrix.extension, 'zip')
+        run: |
+          zip -r sdk-cpp.zip sdk-cpp/*
+
+      - name: Pack artifact (tar)
+        if: startsWith(matrix.extension, 'tar')
+        run: |
+          tar -czvf sdk-cpp.tar.gz sdk-cpp/*
+
+      - name: Upload artifact to release
+        uses: softprops/action-gh-release@v1
+        with:
+          append_body: true
+          files: |
+            sdk-cpp.${{ matrix.extension }}

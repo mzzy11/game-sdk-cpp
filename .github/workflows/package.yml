@@ -1,0 +1,31 @@
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          zip -r sdk-cpp.zip src/*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: sdk-cpp-${{ github.sha }}.zip
+          path: sdk-cpp.zip
+
+  tar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          tar -czvf sdk-cpp.tar.gz src/*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: sdk-cpp-${{ github.sha }}.tar.gz
+          path: sdk-cpp.tar.gz
