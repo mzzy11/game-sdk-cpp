@@ -1,8 +1,12 @@
 #ifndef THUAI7_AGENT_AGENT_H_
 #define THUAI7_AGENT_AGENT_H_
 
-#include <cstdint>
+#include <hv/EventLoop.h>
+#include <hv/WebSocketClient.h>
+
+#include <memory>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -16,13 +20,17 @@ namespace thuai7_agent {
 
 class Agent {
  public:
-  Agent(std::string_view host, uint16_t port, std::string_view token);
+  explicit Agent(std::string token);
 
   Agent(Agent const&) = delete;
   Agent(Agent&&) = default;
   auto operator=(Agent const&) -> Agent& = delete;
   auto operator=(Agent&&) -> Agent& = default;
-  ~Agent();
+  ~Agent() = default;
+
+  void Connect(std::string_view server_address);
+
+  void Disconnect();
 
   void Abandon(Supply::Kind item_kind, int count);
 
@@ -51,6 +59,16 @@ class Agent {
   auto GetSupplies() -> std::optional<std::vector<Supply> const&>;
 
   auto GetSafeZone() -> std::optional<SafeZone const&>;
+
+ private:
+  void OnMessage(std::string_view message);
+
+  std::optional<std::vector<PlayerInfo>> all_player_info_;
+  std::optional<Map> map_;
+  std::optional<std::vector<Supply>> supplies_;
+  std::optional<SafeZone> safe_zone_;
+  std::string token_;
+  std::unique_ptr<hv::WebSocketClient> ws_client_;
 };
 
 }  // namespace thuai7_agent

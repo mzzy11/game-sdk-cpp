@@ -31,17 +31,16 @@ If you modify the code, this section may be invalid.
 Run the following command to start the agent:
 
 ```bash
-./agent --host <host> --port <port> --token <token>
+./agent --server <server> --token <token>
 ```
 
-- `<host>`: The IP address of the server.
-- `<port>`: The port of the server.
-- `<token>`: The token of the agent.
+- `<server>`: The server address of the game. (Default: `ws://localhost:14514`)
+- `<token>`: The token of the agent. (Default: ``)
 
 For example:
 
 ```bash
-./agent --host 127.0.0.1 --port 8080 --token 114514
+./agent --server ws://localhost:14514 --token 1919810
 ```
 
 ## Contributing
