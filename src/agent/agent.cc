@@ -38,6 +38,12 @@ auto Agent::IsConnected() const -> bool { return ws_client_->isConnected(); }
 
 void Agent::Disconnect() { ws_client_->close(); }
 
+auto Agent::IsGameReady() const -> bool {
+  return all_player_info_.has_value() && map_.has_value() &&
+         supplies_.has_value() && safe_zone_.has_value() &&
+         self_id_.has_value();
+}
+
 void Agent::Loop() {
   // TODO(mzzy11): Implement loop.
 }

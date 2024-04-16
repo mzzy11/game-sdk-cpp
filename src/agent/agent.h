@@ -31,29 +31,17 @@ class Agent {
   auto operator=(Agent&&) -> Agent& = default;
   ~Agent();
 
-  void Connect(std::string_view server_address);
+  // Methods for interacting with the server.
+
+  [[nodiscard]] auto token() const -> std::string { return token_; }
 
   [[nodiscard]] auto IsConnected() const -> bool;
 
+  void Connect(std::string_view server_address);
+
   void Disconnect();
 
-  void Abandon(Supply::Kind item_kind, int count);
-
-  void PickUp(Supply::Kind item_kind, int count, Position const& position);
-
-  void SwitchArm(Supply::Kind item_kind);
-
-  void UseMedicine(Supply::Kind item_kind);
-
-  void UseGrenade(Position const& position);
-
-  void Move(Position const& position);
-
-  void Stop();
-
-  void Attack(Position const& position);
-
-  void ChooseOrigin(Position const& position);
+  // Methods for interacting with the game.
 
   [[nodiscard]] auto all_player_info() const
       -> std::optional<std::reference_wrapper<std::vector<PlayerInfo> const>> {
@@ -75,7 +63,25 @@ class Agent {
 
   [[nodiscard]] auto self_id() const -> std::optional<int> { return self_id_; }
 
-  [[nodiscard]] auto token() const -> std::string { return token_; }
+  [[nodiscard]] auto IsGameReady() const -> bool;
+
+  void Abandon(Supply::Kind item_kind, int count);
+
+  void PickUp(Supply::Kind item_kind, int count, Position const& position);
+
+  void SwitchArm(Supply::Kind item_kind);
+
+  void UseMedicine(Supply::Kind item_kind);
+
+  void UseGrenade(Position const& position);
+
+  void Move(Position const& position);
+
+  void Stop();
+
+  void Attack(Position const& position);
+
+  void ChooseOrigin(Position const& position);
 
  private:
   void Loop();

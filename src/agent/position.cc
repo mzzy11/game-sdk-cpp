@@ -4,7 +4,6 @@
 
 #include <string>
 
-
 namespace thuai7_agent {
 
 auto format_as(Position const& object) -> std::string {

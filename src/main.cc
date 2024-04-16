@@ -61,25 +61,42 @@ auto main(int argc, char* argv[]) -> int {
 
   event_loop->runInLoop([&] { agent.Connect(options->server); });
 
-  bool is_setup = false;
   bool is_previous_connected = false;
+  bool is_previous_game_ready = false;
+  bool is_setup = false;
 
   event_loop->setInterval(kLoopInterval, [&](hv::TimerID) {
+    // Check connection status.
     if (!agent.IsConnected()) {
       if (is_previous_connected) {
         spdlog::error("{} is disconnected", agent);
+        is_previous_connected = false;
       }
-
       spdlog::debug("{} is waiting for connection", agent);
-
-      is_previous_connected = false;
       return;
     }
 
     if (!is_previous_connected) {
       spdlog::info("{} is connected", agent);
+      is_previous_connected = true;
     }
 
+    // Check game ready status.
+    if (!agent.IsGameReady()) {
+      if (is_previous_game_ready) {
+        spdlog::error("{} is no longer in a ready game", agent);
+        is_previous_game_ready = false;
+      }
+      spdlog::debug("{} is waiting for the game to be ready", agent);
+      return;
+    }
+
+    if (!is_previous_game_ready) {
+      spdlog::info("{} is in a ready game", agent);
+      is_previous_game_ready = true;
+    }
+
+    // Setup agent if not done yet.
     if (!is_setup) {
       Setup(agent);
       spdlog::info("{} is setup", agent);
@@ -87,8 +104,6 @@ auto main(int argc, char* argv[]) -> int {
     }
 
     Loop(agent);
-
-    is_previous_connected = true;
   });
 
   event_loop->run();

@@ -5,7 +5,6 @@
 
 #include "position.h"
 
-
 namespace thuai7_agent {
 
 struct SafeZone {
