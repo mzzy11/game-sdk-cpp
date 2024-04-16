@@ -1,6 +1,8 @@
 #ifndef THUAI7_AGENT_SUPPLY_H_
 #define THUAI7_AGENT_SUPPLY_H_
 
+#include <string>
+
 #include "position.h"
 
 namespace thuai7_agent {
@@ -23,6 +25,9 @@ struct Supply {
   int count;
   Position position;
 };
+
+auto format_as(Supply::Kind object) -> std::string;
+auto format_as(Supply const& object) -> std::string;
 
 }  // namespace thuai7_agent
 

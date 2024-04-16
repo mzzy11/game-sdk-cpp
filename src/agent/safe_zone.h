@@ -1,7 +1,10 @@
 #ifndef THUAI7_AGENT_SAFE_ZONE_H_
 #define THUAI7_AGENT_SAFE_ZONE_H_
 
+#include <string>
+
 #include "position.h"
+
 
 namespace thuai7_agent {
 
@@ -9,6 +12,8 @@ struct SafeZone {
   Position center;
   int radius;
 };
+
+auto format_as(SafeZone const& object) -> std::string;
 
 }  // namespace thuai7_agent
 

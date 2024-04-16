@@ -2,9 +2,13 @@
 
 THUAI7 agent template in C++
 
-## Install
+## Usage
 
-Before building the project, you need to install [XMake](https://xmake.io) first.
+### Prerequisites
+
+Before building the project, you need to install [XMake](https://xmake.io) first. Of course, a C++ compiler is also required.
+
+### Build
 
 Run the following code to configure the project:
 
@@ -24,9 +28,13 @@ Then build the project:
 xmake
 ```
 
-## Usage
+### Write Your Code
 
-If you modify the code, this section may be invalid.
+You can write your code in `logic.cc`. For experienced developers, you can also modify any other files in the project.
+
+### Run
+
+If you modify the code in `main.cc`, this section may be invalid.
 
 Run the following command to start the agent:
 
@@ -35,7 +43,7 @@ Run the following command to start the agent:
 ```
 
 - `<server>`: The server address of the game. (Default: `ws://localhost:14514`)
-- `<token>`: The token of the agent. (Default: ``)
+- `<token>`: The token of the agent. (Default: `1919810`)
 
 For example:
 

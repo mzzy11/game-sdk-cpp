@@ -1,6 +1,7 @@
 #ifndef THUAI7_AGENT_PLAYER_INFO_H_
 #define THUAI7_AGENT_PLAYER_INFO_H_
 
+#include <string>
 #include <vector>
 
 #include "position.h"
@@ -42,6 +43,12 @@ struct PlayerInfo {
   Position position;
   std::vector<Item> inventory;
 };
+
+auto format_as(ArmorKind object) -> std::string;
+auto format_as(FirearmKind object) -> std::string;
+auto format_as(Item::Kind object) -> std::string;
+auto format_as(Item const& object) -> std::string;
+auto format_as(PlayerInfo const& object) -> std::string;
 
 }  // namespace thuai7_agent
 

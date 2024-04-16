@@ -4,6 +4,7 @@
 #include <hv/EventLoop.h>
 #include <hv/WebSocketClient.h>
 
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -20,7 +21,7 @@ namespace thuai7_agent {
 
 class Agent {
  public:
-  explicit Agent(std::string token);
+  explicit Agent(std::string_view token, hv::EventLoopPtr const& event_loop);
 
   Agent(Agent const&) = delete;
   Agent(Agent&&) = default;
@@ -29,6 +30,8 @@ class Agent {
   ~Agent() = default;
 
   void Connect(std::string_view server_address);
+
+  [[nodiscard]] auto IsConnected() const -> bool;
 
   void Disconnect();
 
@@ -50,15 +53,27 @@ class Agent {
 
   void ChooseOrigin(Position const& position);
 
-  auto GetSelfPlayerInfo() -> std::optional<PlayerInfo const&>;
+  [[nodiscard]] auto all_player_info() const
+      -> std::optional<std::reference_wrapper<std::vector<PlayerInfo> const>> {
+    return all_player_info_;
+  }
 
-  auto GetAllPlayerInfo() -> std::optional<std::vector<PlayerInfo> const&>;
+  [[nodiscard]] auto map() const
+      -> std::optional<std::reference_wrapper<Map const>> {
+    return map_;
+  }
 
-  auto GetMap() -> std::optional<Map const&>;
+  [[nodiscard]] auto supplies() const
+      -> std::optional<std::reference_wrapper<std::vector<Supply> const>> {
+    return supplies_;
+  }
 
-  auto GetSupplies() -> std::optional<std::vector<Supply> const&>;
+  [[nodiscard]] auto safe_zone() const
+      -> std::optional<std::reference_wrapper<SafeZone const>>;
 
-  auto GetSafeZone() -> std::optional<SafeZone const&>;
+  [[nodiscard]] auto self_id() const -> std::optional<int> { return self_id_; }
+
+  [[nodiscard]] auto token() const -> std::string { return token_; }
 
  private:
   void OnMessage(std::string_view message);
@@ -67,9 +82,12 @@ class Agent {
   std::optional<Map> map_;
   std::optional<std::vector<Supply>> supplies_;
   std::optional<SafeZone> safe_zone_;
+  std::optional<int> self_id_;
   std::string token_;
   std::unique_ptr<hv::WebSocketClient> ws_client_;
 };
+
+auto format_as(Agent const& object) -> std::string;
 
 }  // namespace thuai7_agent
 
