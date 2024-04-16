@@ -57,7 +57,7 @@ auto main(int argc, char* argv[]) -> int {
 
   hv::EventLoopPtr event_loop = std::make_shared<hv::EventLoop>();
 
-  thuai7_agent::Agent agent(options->token, event_loop);
+  thuai7_agent::Agent agent(options->token, event_loop, kLoopInterval);
 
   event_loop->runInLoop([&] { agent.Connect(options->server); });
 

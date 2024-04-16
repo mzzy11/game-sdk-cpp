@@ -11,6 +11,7 @@
 #include <string_view>
 #include <vector>
 
+#include "hv/Event.h"
 #include "map.h"
 #include "player_info.h"
 #include "position.h"
@@ -21,13 +22,14 @@ namespace thuai7_agent {
 
 class Agent {
  public:
-  explicit Agent(std::string_view token, hv::EventLoopPtr const& event_loop);
+  explicit Agent(std::string_view token, hv::EventLoopPtr const& event_loop,
+                 int loop_interval);
 
   Agent(Agent const&) = delete;
   Agent(Agent&&) = default;
   auto operator=(Agent const&) -> Agent& = delete;
   auto operator=(Agent&&) -> Agent& = default;
-  ~Agent() = default;
+  ~Agent();
 
   void Connect(std::string_view server_address);
 
@@ -76,7 +78,12 @@ class Agent {
   [[nodiscard]] auto token() const -> std::string { return token_; }
 
  private:
+  void Loop();
   void OnMessage(std::string_view message);
+
+  hv::EventLoopPtr event_loop_;
+  hv::TimerID loop_timer_id_;
+  std::unique_ptr<hv::WebSocketClient> ws_client_;
 
   std::optional<std::vector<PlayerInfo>> all_player_info_;
   std::optional<Map> map_;
@@ -84,7 +91,6 @@ class Agent {
   std::optional<SafeZone> safe_zone_;
   std::optional<int> self_id_;
   std::string token_;
-  std::unique_ptr<hv::WebSocketClient> ws_client_;
 };
 
 auto format_as(Agent const& object) -> std::string;

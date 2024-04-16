@@ -8,10 +8,16 @@
 #include <string>
 #include <string_view>
 
+#include "hv/Event.h"
+
 namespace thuai7_agent {
 
-Agent::Agent(std::string_view token, hv::EventLoopPtr const& event_loop)
-    : token_(token) {
+Agent::Agent(std::string_view token, hv::EventLoopPtr const& event_loop,
+             int loop_interval)
+    : event_loop_(event_loop), token_(token) {
+  loop_timer_id_ =
+      event_loop_->setInterval(loop_interval, [this](hv::TimerID) { Loop(); });
+
   ws_client_ = std::make_unique<hv::WebSocketClient>(event_loop);
 
   reconn_setting_t reconn_setting;
@@ -22,6 +28,8 @@ Agent::Agent(std::string_view token, hv::EventLoopPtr const& event_loop)
   ws_client_->onmessage = [this](std::string const& msg) { OnMessage(msg); };
 }
 
+Agent::~Agent() { event_loop_->killTimer(loop_timer_id_); }
+
 void Agent::Connect(std::string_view server_address) {
   ws_client_->open(server_address.data());
 }
@@ -29,6 +37,10 @@ void Agent::Connect(std::string_view server_address) {
 auto Agent::IsConnected() const -> bool { return ws_client_->isConnected(); }
 
 void Agent::Disconnect() { ws_client_->close(); }
+
+void Agent::Loop() {
+  // TODO(mzzy11): Implement loop.
+}
 
 void Agent::OnMessage(std::string_view message) {
   // TODO(mzzy11): Parse message.
