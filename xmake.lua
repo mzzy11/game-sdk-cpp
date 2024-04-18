@@ -21,6 +21,7 @@ target("agent")
     set_exceptions("cxx")
     set_kind("binary")
     set_languages("cxx20")
+    set_warnings("allextra")
 
     if is_plat("windows") then
         add_defines("NOMINMAX")
