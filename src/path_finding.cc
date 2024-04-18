@@ -10,13 +10,15 @@
 
 #include "agent/position.h"
 
-auto CalculateManhattanDistance(thuai7_agent::Position<int> const& start,
-                                thuai7_agent::Position<int> const& end) -> int;
-auto GetNeighbors(thuai7_agent::Map const& map,
-                  thuai7_agent::Position<int> const& position)
+static auto CalculateManhattanDistance(thuai7_agent::Position<int> const& start,
+                                       thuai7_agent::Position<int> const& end)
+    -> int;
+static auto GetNeighbors(thuai7_agent::Map const& map,
+                         thuai7_agent::Position<int> const& position)
     -> std::vector<thuai7_agent::Position<int>>;
-auto IsValidPosition(thuai7_agent::Map const& map,
-                     thuai7_agent::Position<int> const& position) -> bool;
+static auto IsValidPosition(thuai7_agent::Map const& map,
+                            thuai7_agent::Position<int> const& position)
+    -> bool;
 
 auto FindPathBeFS(thuai7_agent::Map const& map,
                   thuai7_agent::Position<int> const& start,
