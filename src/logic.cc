@@ -1,14 +1,13 @@
-#include <fmt/format.h>
 #include <fmt/ranges.h>
 #include <spdlog/spdlog.h>
 
-#include <algorithm>
-#include <ranges>
 #include <vector>
 
 #include "agent/agent.h"
 #include "agent/position.h"
 #include "path_finding.h"
+
+constexpr auto kFloatPositionShift = 0.5;
 
 // NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
 static struct {
@@ -27,14 +26,8 @@ void Loop(thuai7_agent::Agent& agent) {
   // opponent, and attack the opponent.
 
   auto const& player_info_list = agent.all_player_info().value().get();
-  auto self_id = agent.self_id().value();
-  auto const& self_info = player_info_list.at(self_id);
-  auto const& opponent_info =
-      (player_info_list |
-       std::views::filter([self_id](
-                              thuai7_agent::PlayerInfo const& player_info) {
-         return player_info.id != self_id;
-       })).front();
+  auto const& self_info = player_info_list.at(0);
+  auto const& opponent_info = player_info_list.at(1);
 
   auto const& map = agent.map().value().get();
 
@@ -61,9 +54,9 @@ void Loop(thuai7_agent::Agent& agent) {
 
   if (state.path.size() > 1) {
     auto next_position_int = state.path.at(1);
-    auto next_position =
-        thuai7_agent::Position{static_cast<float>(next_position_int.x),
-                               static_cast<float>(next_position_int.y)};
+    auto next_position = thuai7_agent::Position<float>{
+        static_cast<float>(next_position_int.x + kFloatPositionShift),
+        static_cast<float>(next_position_int.y + kFloatPositionShift)};
 
     agent.Move(next_position);
 
