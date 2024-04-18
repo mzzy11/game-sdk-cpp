@@ -1,10 +1,10 @@
 #include "path_finding.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <functional>
 #include <queue>
-#include <ranges>
 #include <unordered_set>
 #include <vector>
 
@@ -97,24 +97,32 @@ static auto CalculateManhattanDistance(thuai7_agent::Position<int> const& start,
 static auto GetNeighbors(thuai7_agent::Map const& map,
                          thuai7_agent::Position<int> const& position)
     -> std::vector<thuai7_agent::Position<int>> {
-  std::vector<thuai7_agent::Position<int>> neighbors{
-      {position.x - 1, position.y},
-      {position.x + 1, position.y},
-      {position.x, position.y - 1},
-      {position.x, position.y + 1}};
+  std::array<thuai7_agent::Position<int>, 4> neighbors{
+      thuai7_agent::Position<int>{position.x - 1, position.y},
+      thuai7_agent::Position<int>{position.x + 1, position.y},
+      thuai7_agent::Position<int>{position.x, position.y - 1},
+      thuai7_agent::Position<int>{position.x, position.y + 1},
+  };
 
-  auto view =
-      neighbors | std::views::filter([&map](auto const& neighbor) -> bool {
-        return IsValidPosition(map, neighbor);
-      });
-  return {view.begin(), view.end()};
+  std::vector<thuai7_agent::Position<int>> valid_neighbors;
+  for (auto const& neighbor : neighbors) {
+    if (IsValidPosition(map, neighbor)) {
+      valid_neighbors.push_back(neighbor);
+    }
+  }
+
+  return valid_neighbors;
 }
 
 static auto IsValidPosition(thuai7_agent::Map const& map,
                             thuai7_agent::Position<int> const& position)
     -> bool {
-  return std::ranges::all_of(map.obstacles,
-                             [&position](auto const& obstacle) -> bool {
-                               return obstacle != position;
-                             });
+  for (auto const& obstacle : map.obstacles) {
+    if (position == obstacle) {
+      return false;
+    }
+  }
+
+  return position.x >= 0 && position.x < map.length && position.y >= 0 &&
+         position.y < map.length;
 }
