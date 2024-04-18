@@ -44,6 +44,14 @@ auto Agent::IsGameReady() const -> bool {
          self_id_.has_value();
 }
 
+void Agent::Move(Position<float> const& position) {
+  // TODO(mzzy11): Implement move.
+}
+
+void Agent::Attack(Position<float> const& position) {
+  // TODO(mzzy11): Implement attack.
+}
+
 void Agent::Loop() {
   // TODO(mzzy11): Implement loop.
 }

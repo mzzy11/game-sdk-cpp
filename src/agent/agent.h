@@ -67,21 +67,22 @@ class Agent {
 
   void Abandon(Supply::Kind item_kind, int count);
 
-  void PickUp(Supply::Kind item_kind, int count, Position const& position);
+  void PickUp(Supply::Kind item_kind, int count,
+              Position<float> const& position);
 
   void SwitchArm(Supply::Kind item_kind);
 
   void UseMedicine(Supply::Kind item_kind);
 
-  void UseGrenade(Position const& position);
+  void UseGrenade(Position<float> const& position);
 
-  void Move(Position const& position);
+  void Move(Position<float> const& position);
 
   void Stop();
 
-  void Attack(Position const& position);
+  void Attack(Position<float> const& position);
 
-  void ChooseOrigin(Position const& position);
+  void ChooseOrigin(Position<float> const& position);
 
  private:
   void Loop();

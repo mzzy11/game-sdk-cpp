@@ -9,9 +9,8 @@
 namespace thuai7_agent {
 
 struct Map {
-  int width;
-  int height;
-  std::vector<Position> obstacles;
+  int length;
+  std::vector<Position<int>> obstacles;
 };
 
 auto format_as(Map const& object) -> std::string;

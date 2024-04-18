@@ -7,8 +7,8 @@
 namespace thuai7_agent {
 
 auto format_as(Map const& object) -> std::string {
-  return fmt::format("Map{{width: {}, height: {}, obstacles: {}}}",
-                     object.width, object.height, object.obstacles);
+  return fmt::format("Map{{length: {}, obstacles: {}}}", object.length,
+                     object.obstacles);
 }
 
 }  // namespace thuai7_agent

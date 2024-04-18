@@ -40,7 +40,7 @@ struct PlayerInfo {
   float speed;
   FirearmKind firearm;
   float range;
-  Position position;
+  Position<float> position;
   std::vector<Item> inventory;
 };
 

@@ -23,7 +23,7 @@ struct Supply {
 
   Kind kind;
   int count;
-  Position position;
+  Position<float> position;
 };
 
 auto format_as(Supply::Kind object) -> std::string;

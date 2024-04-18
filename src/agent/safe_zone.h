@@ -8,7 +8,7 @@
 namespace thuai7_agent {
 
 struct SafeZone {
-  Position center;
+  Position<float> center;
   int radius;
 };
 
