@@ -1,12 +1,13 @@
-# C++ Agent Template
+# THUAI7 Agent Template (C++)
 
-THUAI7 agent template in C++
+C++ agent template for the 7th Tsinghua University Artificial Intelligence Challenge.
 
 ## Usage
 
 ### Prerequisites
 
-Before building the project, you need to install [XMake](https://xmake.io) first. Of course, a C++ compiler is also required.
+- [XMake](https://xmake.io) >= 2.8.8
+- C++ compiler toolchain with C++20 support
 
 ### Build
 
