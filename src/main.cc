@@ -59,6 +59,8 @@ auto main(int argc, char* argv[]) -> int {
 
   thuai7_agent::Agent agent(options->token, event_loop, kLoopInterval);
 
+  spdlog::info("{} is starting with server {}", agent, options->server);
+
   event_loop->runInLoop([&] { agent.Connect(options->server); });
 
   bool is_previous_connected = false;

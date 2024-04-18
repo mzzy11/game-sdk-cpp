@@ -1,0 +1,10 @@
+/.github
+/.xmake
+/build
+/.clang-format
+/.clang-tidy
+/.dockerignore
+/.gitattributes
+/.gitignore
+/LICENSE
+/README.md
