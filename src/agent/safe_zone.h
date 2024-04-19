@@ -9,7 +9,7 @@ namespace thuai7_agent {
 
 struct SafeZone {
   Position<float> center;
-  int radius;
+  float radius;
 };
 
 auto format_as(SafeZone const& object) -> std::string;
