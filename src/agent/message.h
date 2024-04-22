@@ -7,57 +7,37 @@
 // 3rd party libraries
 #include <nlohmann/json.hpp>
 // project headers
+#include "agent/player_info.h"
 #include "agent/position.h"
+#include "agent/supply.h"
 
 namespace thuai7_agent {
 
-enum class SupplyKind {
-  S686,
-  VECTORY,
-  AWM,
-  M16,
-  BULLET,
-  BANDAGE,
-  PRIMARY_ARMOR,
-  PREMIUM_ARMOR,
-  FIRST_AID,
-  GRENADE,
-};
 NLOHMANN_JSON_SERIALIZE_ENUM(SupplyKind,
                              {
-                                 {SupplyKind::S686, "S686"},
-                                 {SupplyKind::VECTORY, "VECTORY"},
-                                 {SupplyKind::AWM, "AWM"},
-                                 {SupplyKind::M16, "M16"},
-                                 {SupplyKind::BULLET, "BULLET"},
-                                 {SupplyKind::BANDAGE, "BANDAGE"},
-                                 {SupplyKind::PRIMARY_ARMOR, "PRIMARY_ARMOR"},
-                                 {SupplyKind::PREMIUM_ARMOR, "PREMIUM_ARMOR"},
-                                 {SupplyKind::FIRST_AID, "FIRST_AID"},
-                                 {SupplyKind::GRENADE, "GRENADE"},
+                                 {SupplyKind::kS686, "S686"},
+                                 {SupplyKind::kVectory, "VECTORY"},
+                                 {SupplyKind::kAwm, "AWM"},
+                                 {SupplyKind::kM16, "M16"},
+                                 {SupplyKind::kBullet, "BULLET"},
+                                 {SupplyKind::kBandage, "BANDAGE"},
+                                 {SupplyKind::kPrimaryArmor, "PRIMARY_ARMOR"},
+                                 {SupplyKind::kPremiumArmor, "PREMIUM_ARMOR"},
+                                 {SupplyKind::kFirstAid, "FIRST_AID"},
+                                 {SupplyKind::kGrenade, "GRENADE"},
                              });
 
-enum class FirearmKind {
-  S686,
-  VECTORY,
-  AWM,
-  M16,
-};
 NLOHMANN_JSON_SERIALIZE_ENUM(FirearmKind, {
-                                              {FirearmKind::S686, "S686"},
-                                              {FirearmKind::VECTORY, "VECTORY"},
-                                              {FirearmKind::AWM, "AWM"},
-                                              {FirearmKind::M16, "M16"},
+                                              {FirearmKind::kS686, "S686"},
+                                              {FirearmKind::kVector, "VECTORY"},
+                                              {FirearmKind::kAwm, "AWM"},
+                                              {FirearmKind::kM16, "M16"},
                                           });
 
-enum class MedicineKind {
-  BANDAGE,
-  FIRST_AID,
-};
 NLOHMANN_JSON_SERIALIZE_ENUM(MedicineKind,
                              {
-                                 {MedicineKind::BANDAGE, "BANDAGE"},
-                                 {MedicineKind::FIRST_AID, "FIRST_AID"},
+                                 {MedicineKind::kBandage, "BANDAGE"},
+                                 {MedicineKind::kFirstAid, "FIRST_AID"},
                              });
 
 class Message {

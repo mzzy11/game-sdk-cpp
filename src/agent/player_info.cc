@@ -15,7 +15,7 @@ auto format_as(FirearmKind object) -> std::string {
   return std::string(magic_enum::enum_name(object));
 }
 
-auto format_as(Item::Kind object) -> std::string {
+auto format_as(ItemKind object) -> std::string {
   return std::string(magic_enum::enum_name(object));
 }
 

@@ -65,14 +65,13 @@ class Agent {
 
   [[nodiscard]] auto IsGameReady() const -> bool;
 
-  void Abandon(Supply::Kind item_kind, int count);
+  void Abandon(SupplyKind item_kind, int count);
 
-  void PickUp(Supply::Kind item_kind, int count,
-              Position<float> const& position);
+  void PickUp(SupplyKind item_kind, int count, Position<float> const& position);
 
-  void SwitchArm(Supply::Kind item_kind);
+  void SwitchArm(SupplyKind item_kind);
 
-  void UseMedicine(Supply::Kind item_kind);
+  void UseMedicine(SupplyKind item_kind);
 
   void UseGrenade(Position<float> const& position);
 
