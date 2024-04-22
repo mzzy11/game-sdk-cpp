@@ -46,6 +46,8 @@ void Loop(thuai7_agent::Agent& agent) {
       spdlog::info("no path found");
       return;
     }
+
+    spdlog::info("path: {}", state.path);
   }
 
   while (state.path.front() != self_position_int) {
@@ -59,6 +61,7 @@ void Loop(thuai7_agent::Agent& agent) {
         static_cast<float>(next_position_int.y + kFloatPositionShift)};
 
     agent.Move(next_position);
+    spdlog::info("move to {}", next_position);
 
     return;
   }

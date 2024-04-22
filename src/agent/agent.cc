@@ -15,6 +15,7 @@
 #include "agent/position.h"
 #include "agent/supply.h"
 #include "hv/Event.h"
+#include "message.h"
 
 namespace thuai7_agent {
 
@@ -40,6 +41,7 @@ Agent::~Agent() { event_loop_->killTimer(loop_timer_id_); }
 
 void Agent::Connect(std::string_view server_address) {
   ws_client_->open(server_address.data());
+  // std::this_thread::sleep_for(std::chrono::seconds(5));
 }
 
 auto Agent::IsConnected() const -> bool { return ws_client_->isConnected(); }
@@ -90,6 +92,10 @@ void Agent::ChooseOrigin(Position<float> const& position) {
 
 void Agent::Loop() {
   // TODO(mzzy11): Implement loop.
+  // spdlog::debug("sending get player info message");
+  if (IsConnected()) {
+    ws_client_->send(GetPlayerInfoMessage(token_).json());
+  }
 }
 
 void Agent::OnMessage(Message const& message) {
@@ -101,44 +107,48 @@ void Agent::OnMessage(Message const& message) {
       spdlog::error("error from server: {}",
                     msg_dict["message"].get<std::string>());
     } else if (msg_type == "PLAYERS_INFO") {
+      all_player_info_ = std::vector<PlayerInfo>();
       for (auto const& data : msg_dict["players"]) {
-        auto id = data["playerId"].get<int>();
+        auto player_id = data["playerId"].get<int>();
         auto armor = data["armor"].get<ArmorKind>();
         auto health = data["health"].get<int>();
         auto speed = data["speed"].get<float>();
         auto firearm = data["firearm"]["name"].get<FirearmKind>();
         auto range = data["firearm"]["distance"].get<float>();
-        Position<float> position(data["position"]["x"].get<float>(),
-                                 data["position"]["y"].get<float>());
+        Position<float> position{data["position"]["x"].get<float>(),
+                                 data["position"]["y"].get<float>()};
         std::vector<Item> inventory;
         for (auto const& msg_item : data["inventory"]) {
-          inventory.emplace_back(Item(msg_item["name"].get<ItemKind>(),
-                                      msg_item["num"].get<int>()));
+          inventory.emplace_back(Item{msg_item["name"].get<ItemKind>(),
+                                      msg_item["num"].get<int>()});
         }
-        all_player_info_->emplace_back(PlayerInfo(
-            id, armor, health, speed, firearm, range, position, inventory));
+        all_player_info_->emplace_back(PlayerInfo{player_id, armor, health,
+                                                  speed, firearm, range,
+                                                  position, inventory});
       }
     } else if (msg_type == "MAP") {
       auto length = msg_dict["length"].get<int>();
       std::vector<Position<int>> walls;
       for (auto const& msg_wall : msg_dict["walls"]) {
-        walls.emplace_back(Position(msg_wall["wallPositions"]["x"].get<int>(),
-                                    msg_wall["wallPositions"]["y"].get<int>()));
+        walls.emplace_back(Position{msg_wall["wallPositions"]["x"].get<int>(),
+                                    msg_wall["wallPositions"]["y"].get<int>()});
       }
       map_ = Map(length, walls);
     } else if (msg_type == "SUPPLIES") {
+      supplies_ = std::vector<Supply>();
       for (auto const& msg_supply : msg_dict["supplies"]) {
         auto kind = msg_supply["name"].get<SupplyKind>();
-        Position<float> position(msg_supply["position"]["x"].get<float>(),
-                                 msg_supply["position"]["y"].get<float>());
+        Position<float> position{msg_supply["position"]["x"].get<float>(),
+                                 msg_supply["position"]["y"].get<float>()};
         auto count = msg_supply["numb"].get<int>();
+
         supplies_->emplace_back(Supply{kind, count, position});
       }
     } else if (msg_type == "SAFE_ZONE") {
-      Position<float> center(msg_dict["center"]["x"].get<float>(),
-                             msg_dict["center"]["y"].get<float>());
+      Position<float> center{msg_dict["center"]["x"].get<float>(),
+                             msg_dict["center"]["y"].get<float>()};
       auto radius = msg_dict["radius"].get<float>();
-      safe_zone_ = SafeZone(center, radius);
+      safe_zone_ = SafeZone{center, radius};
     } else if (msg_type == "PLAYER_ID") {
       self_id_ = msg_dict["playerId"].get<int>();
     } else {
