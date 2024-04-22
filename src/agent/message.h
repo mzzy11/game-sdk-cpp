@@ -40,20 +40,24 @@ NLOHMANN_JSON_SERIALIZE_ENUM(MedicineKind,
                                  {MedicineKind::kFirstAid, "FIRST_AID"},
                              });
 
-class Message {
- public:
+NLOHMANN_JSON_SERIALIZE_ENUM(ArmorKind,
+                             {
+                                 {ArmorKind::kNone, "NO_ARMOR"},
+                                 {ArmorKind::kPrimary, "PRIMARY_ARMOR"},
+                                 {ArmorKind::kPremium, "PREMIUM_ARMOR"},
+                             });
+
+struct Message {
   explicit Message(const std::string& json_str)
       : msg(nlohmann::json::parse(json_str)) {}
   Message() = default;
 
-  auto json() -> std::string { return msg.dump(); }
+  [[nodiscard]] auto json() const -> std::string { return msg.dump(); }
 
- protected:
   nlohmann::json msg;
 };
 
-class PerformAbandonMessage : public Message {
- public:
+struct PerformAbandonMessage : public Message {
   PerformAbandonMessage(int numb, const std::string& token,
                         const SupplyKind& target_supply) {
     msg["messageType"] = "PERFORM_ABANDON";
@@ -63,8 +67,7 @@ class PerformAbandonMessage : public Message {
   }
 };
 
-class PerformPickUpMessage : public Message {
- public:
+struct PerformPickUpMessage : public Message {
   PerformPickUpMessage(const std::string& token,
                        const SupplyKind& target_supply, int num,
                        const Position<float>& target_position) {
@@ -77,8 +80,7 @@ class PerformPickUpMessage : public Message {
   }
 };
 
-class PerformSwitchArmMessage : public Message {
- public:
+struct PerformSwitchArmMessage : public Message {
   PerformSwitchArmMessage(const std::string& token,
                           const FirearmKind& target_firearm) {
     msg["messageType"] = "PERFORM_SWITCH_ARM";
@@ -87,8 +89,7 @@ class PerformSwitchArmMessage : public Message {
   }
 };
 
-class PerformUseMedicineMessage : public Message {
- public:
+struct PerformUseMedicineMessage : public Message {
   PerformUseMedicineMessage(const std::string& token,
                             const MedicineKind& medicine_name) {
     msg["messageType"] = "PERFORM_USE_MEDICINE";
@@ -97,8 +98,7 @@ class PerformUseMedicineMessage : public Message {
   }
 };
 
-class PerformUseGrenadeMessage : public Message {
- public:
+struct PerformUseGrenadeMessage : public Message {
   PerformUseGrenadeMessage(const std::string& token,
                            const Position<float>& target_position) {
     msg["messageType"] = "PERFORM_USE_GRENADE";
@@ -108,8 +108,7 @@ class PerformUseGrenadeMessage : public Message {
   }
 };
 
-class PerformMoveMessage : public Message {
- public:
+struct PerformMoveMessage : public Message {
   PerformMoveMessage(const std::string& token,
                      const Position<float>& destination) {
     msg["messageType"] = "PERFORM_MOVE";
@@ -118,16 +117,14 @@ class PerformMoveMessage : public Message {
   }
 };
 
-class PerformStopMessage : public Message {
- public:
+struct PerformStopMessage : public Message {
   explicit PerformStopMessage(const std::string& token) {
     msg["messageType"] = "PERFORM_STOP";
     msg["token"] = token;
   }
 };
 
-class PerformAttackMessage : public Message {
- public:
+struct PerformAttackMessage : public Message {
   PerformAttackMessage(const std::string& token,
                        const Position<float>& target_position) {
     msg["messageType"] = "PERFORM_ATTACK";
@@ -137,24 +134,21 @@ class PerformAttackMessage : public Message {
   }
 };
 
-class GetPlayerInfoMessage : public Message {
- public:
+struct GetPlayerInfoMessage : public Message {
   explicit GetPlayerInfoMessage(const std::string& token) {
     msg["messageType"] = "GET_PLAYER_INFO";
     msg["token"] = token;
   }
 };
 
-class GetMapMessage : public Message {
- public:
+struct GetMapMessage : public Message {
   explicit GetMapMessage(const std::string& token) {
     msg["messageType"] = "GET_MAP";
     msg["token"] = token;
   }
 };
 
-class ChooseOriginMessage : public Message {
- public:
+struct ChooseOriginMessage : public Message {
   ChooseOriginMessage(const std::string& token,
                       const Position<float>& origin_position) {
     msg["messageType"] = "CHOOSE_ORIGIN";
