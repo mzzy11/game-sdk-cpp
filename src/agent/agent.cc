@@ -139,6 +139,10 @@ void Agent::OnMessage(Message const& message) {
                              msg_dict["center"]["y"].get<float>());
       auto radius = msg_dict["radius"].get<float>();
       safe_zone_ = SafeZone(center, radius);
+    } else if (msg_type == "PLAYER_ID") {
+      self_id_ = msg_dict["playerId"].get<int>();
+    } else {
+      spdlog::warn("unknown message type: {}", msg_type);
     }
   } catch (std::exception const& e) {
     spdlog::error("error occurred in message handling: {}", e.what());
