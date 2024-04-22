@@ -49,40 +49,39 @@ auto Agent::IsGameReady() const -> bool {
 }
 
 void Agent::Abandon(SupplyKind target_supply, int count) {
-  // TODO(ethkuil):
+  ws_client_->send(PerformAbandonMessage(count, token_, target_supply).json());
 }
 
 void Agent::PickUp(SupplyKind target_supply, int count,
                    Position<float> const& position) {
-  // TODO(ethkuil):
+  ws_client_->send(
+      PerformPickUpMessage(token_, target_supply, count, position).json());
 }
 
 void Agent::SwitchFirearm(FirearmKind target_firearm) {
-  // TODO(ethkuil):
+  ws_client_->send(PerformSwitchArmMessage(token_, target_firearm).json());
 }
 
 void Agent::UseMedicine(MedicineKind target_medicine) {
-  // TODO(ethkuil):
+  ws_client_->send(PerformUseMedicineMessage(token_, target_medicine).json());
 }
 
 void Agent::UseGrenade(Position<float> const& position) {
-  // TODO(ethkuil):
+  ws_client_->send(PerformUseGrenadeMessage(token_, position).json());
 }
 
 void Agent::Move(Position<float> const& position) {
-  // TODO(ethkuil):
+  ws_client_->send(PerformMoveMessage(token_, position).json());
 }
 
-void Agent::Stop() {
-  // TODO(ethkuil):
-}
+void Agent::Stop() { ws_client_->send(PerformStopMessage(token_).json()); }
 
 void Agent::Attack(Position<float> const& position) {
-  // TODO(ethkuil):
+  ws_client_->send(PerformAttackMessage(token_, position).json());
 }
 
 void Agent::ChooseOrigin(Position<float> const& position) {
-  // TODO(ethkuil):
+  ws_client_->send(ChooseOriginMessage(token_, position).json());
 }
 
 void Agent::Loop() {
