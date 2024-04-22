@@ -8,6 +8,8 @@
 #include <string>
 #include <string_view>
 
+#include "agent/message.h"
+#include "agent/supply.h"
 #include "hv/Event.h"
 
 namespace thuai7_agent {
@@ -25,7 +27,9 @@ Agent::Agent(std::string_view token, hv::EventLoopPtr const& event_loop,
 
   ws_client_->setReconnect(&reconn_setting);
 
-  ws_client_->onmessage = [this](std::string const& msg) { OnMessage(msg); };
+  ws_client_->onmessage = [this](std::string const& msg) {
+    OnMessage(Message(msg));
+  };
 }
 
 Agent::~Agent() { event_loop_->killTimer(loop_timer_id_); }
@@ -44,20 +48,49 @@ auto Agent::IsGameReady() const -> bool {
          self_id_.has_value();
 }
 
+void Agent::Abandon(SupplyKind target_supply, int count) {
+  // TODO(ethkuil):
+}
+
+void Agent::PickUp(SupplyKind target_supply, int count,
+                   Position<float> const& position) {
+  // TODO(ethkuil):
+}
+
+void Agent::SwitchFirearm(FirearmKind target_firearm) {
+  // TODO(ethkuil):
+}
+
+void Agent::UseMedicine(MedicineKind target_medicine) {
+  // TODO(ethkuil):
+}
+
+void Agent::UseGrenade(Position<float> const& position) {
+  // TODO(ethkuil):
+}
+
 void Agent::Move(Position<float> const& position) {
-  // TODO(mzzy11): Implement move.
+  // TODO(ethkuil):
+}
+
+void Agent::Stop() {
+  // TODO(ethkuil):
 }
 
 void Agent::Attack(Position<float> const& position) {
-  // TODO(mzzy11): Implement attack.
+  // TODO(ethkuil):
+}
+
+void Agent::ChooseOrigin(Position<float> const& position) {
+  // TODO(ethkuil):
 }
 
 void Agent::Loop() {
   // TODO(mzzy11): Implement loop.
 }
 
-void Agent::OnMessage(std::string_view message) {
-  // TODO(mzzy11): Parse message.
+void Agent::OnMessage(Message const& message) {
+  // TODO(ethkuil): Parse message.
 }
 
 auto format_as(Agent const& object) -> std::string {

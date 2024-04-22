@@ -42,7 +42,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(MedicineKind,
 
 class Message {
  public:
-  explicit Message(std::string json_str)
+  explicit Message(const std::string& json_str)
       : msg(nlohmann::json::parse(json_str)) {}
   Message() = default;
 

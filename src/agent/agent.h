@@ -13,6 +13,7 @@
 
 #include "hv/Event.h"
 #include "map.h"
+#include "message.h"
 #include "player_info.h"
 #include "position.h"
 #include "safe_zone.h"
@@ -67,13 +68,14 @@ class Agent {
 
   [[nodiscard]] auto IsGameReady() const -> bool;
 
-  void Abandon(SupplyKind item_kind, int count);
+  void Abandon(SupplyKind target_supply, int count);
 
-  void PickUp(SupplyKind item_kind, int count, Position<float> const& position);
+  void PickUp(SupplyKind target_supply, int count,
+              Position<float> const& position);
 
-  void SwitchArm(SupplyKind item_kind);
+  void SwitchFirearm(FirearmKind target_firearm);
 
-  void UseMedicine(SupplyKind item_kind);
+  void UseMedicine(MedicineKind target_medicine);
 
   void UseGrenade(Position<float> const& position);
 
@@ -87,7 +89,7 @@ class Agent {
 
  private:
   void Loop();
-  void OnMessage(std::string_view message);
+  void OnMessage(Message const& message);
 
   hv::EventLoopPtr event_loop_;
   hv::TimerID loop_timer_id_;
