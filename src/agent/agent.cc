@@ -4,10 +4,16 @@
 #include <hv/EventLoop.h>
 #include <hv/WebSocketClient.h>
 #include <hv/hloop.h>
+#include <spdlog/spdlog.h>
 
 #include <string>
 #include <string_view>
 
+#include "agent/map.h"
+#include "agent/message.h"
+#include "agent/player_info.h"
+#include "agent/position.h"
+#include "agent/supply.h"
 #include "hv/Event.h"
 
 namespace thuai7_agent {
@@ -25,7 +31,9 @@ Agent::Agent(std::string_view token, hv::EventLoopPtr const& event_loop,
 
   ws_client_->setReconnect(&reconn_setting);
 
-  ws_client_->onmessage = [this](std::string const& msg) { OnMessage(msg); };
+  ws_client_->onmessage = [this](std::string const& msg) {
+    OnMessage(Message(msg));
+  };
 }
 
 Agent::~Agent() { event_loop_->killTimer(loop_timer_id_); }
@@ -44,20 +52,101 @@ auto Agent::IsGameReady() const -> bool {
          self_id_.has_value();
 }
 
-void Agent::Move(Position<float> const& position) {
-  // TODO(mzzy11): Implement move.
+void Agent::Abandon(SupplyKind target_supply, int count) {
+  ws_client_->send(PerformAbandonMessage(count, token_, target_supply).json());
 }
 
+void Agent::PickUp(SupplyKind target_supply, int count,
+                   Position<float> const& position) {
+  ws_client_->send(
+      PerformPickUpMessage(token_, target_supply, count, position).json());
+}
+
+void Agent::SwitchFirearm(FirearmKind target_firearm) {
+  ws_client_->send(PerformSwitchArmMessage(token_, target_firearm).json());
+}
+
+void Agent::UseMedicine(MedicineKind target_medicine) {
+  ws_client_->send(PerformUseMedicineMessage(token_, target_medicine).json());
+}
+
+void Agent::UseGrenade(Position<float> const& position) {
+  ws_client_->send(PerformUseGrenadeMessage(token_, position).json());
+}
+
+void Agent::Move(Position<float> const& position) {
+  ws_client_->send(PerformMoveMessage(token_, position).json());
+}
+
+void Agent::Stop() { ws_client_->send(PerformStopMessage(token_).json()); }
+
 void Agent::Attack(Position<float> const& position) {
-  // TODO(mzzy11): Implement attack.
+  ws_client_->send(PerformAttackMessage(token_, position).json());
+}
+
+void Agent::ChooseOrigin(Position<float> const& position) {
+  ws_client_->send(ChooseOriginMessage(token_, position).json());
 }
 
 void Agent::Loop() {
   // TODO(mzzy11): Implement loop.
 }
 
-void Agent::OnMessage(std::string_view message) {
-  // TODO(mzzy11): Parse message.
+void Agent::OnMessage(Message const& message) {
+  auto msg_dict = message.msg;
+  try {
+    auto msg_type = msg_dict["messageType"].get<std::string>();
+
+    if (msg_type == "ERROR") {
+      spdlog::error("error from server: {}",
+                    msg_dict["message"].get<std::string>());
+    } else if (msg_type == "PLAYERS_INFO") {
+      for (auto const& data : msg_dict["players"]) {
+        auto id = data["playerId"].get<int>();
+        auto armor = data["armor"].get<ArmorKind>();
+        auto health = data["health"].get<int>();
+        auto speed = data["speed"].get<float>();
+        auto firearm = data["firearm"]["name"].get<FirearmKind>();
+        auto range = data["firearm"]["distance"].get<float>();
+        Position<float> position(data["position"]["x"].get<float>(),
+                                 data["position"]["y"].get<float>());
+        std::vector<Item> inventory;
+        for (auto const& msg_item : data["inventory"]) {
+          inventory.emplace_back(Item(msg_item["name"].get<ItemKind>(),
+                                      msg_item["num"].get<int>()));
+        }
+        all_player_info_->emplace_back(PlayerInfo(
+            id, armor, health, speed, firearm, range, position, inventory));
+      }
+    } else if (msg_type == "MAP") {
+      auto length = msg_dict["length"].get<int>();
+      std::vector<Position<int>> walls;
+      for (auto const& msg_wall : msg_dict["walls"]) {
+        walls.emplace_back(Position(msg_wall["wallPositions"]["x"].get<int>(),
+                                    msg_wall["wallPositions"]["y"].get<int>()));
+      }
+      map_ = Map(length, walls);
+    } else if (msg_type == "SUPPLIES") {
+      for (auto const& msg_supply : msg_dict["supplies"]) {
+        auto kind = msg_supply["name"].get<SupplyKind>();
+        Position<float> position(msg_supply["position"]["x"].get<float>(),
+                                 msg_supply["position"]["y"].get<float>());
+        auto count = msg_supply["numb"].get<int>();
+        supplies_->emplace_back(Supply{kind, count, position});
+      }
+    } else if (msg_type == "SAFE_ZONE") {
+      Position<float> center(msg_dict["center"]["x"].get<float>(),
+                             msg_dict["center"]["y"].get<float>());
+      auto radius = msg_dict["radius"].get<float>();
+      safe_zone_ = SafeZone(center, radius);
+    } else if (msg_type == "PLAYER_ID") {
+      self_id_ = msg_dict["playerId"].get<int>();
+    } else {
+      spdlog::warn("unknown message type: {}", msg_type);
+    }
+  } catch (std::exception const& e) {
+    spdlog::error("error occurred in message handling: {}", e.what());
+  }
 }
 
 auto format_as(Agent const& object) -> std::string {

@@ -7,7 +7,7 @@
 
 namespace thuai7_agent {
 
-auto format_as(Supply::Kind object) -> std::string {
+auto format_as(SupplyKind object) -> std::string {
   return std::string(magic_enum::enum_name(object));
 }
 
