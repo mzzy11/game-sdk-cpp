@@ -26,8 +26,9 @@ void Loop(thuai7_agent::Agent& agent) {
   // opponent, and attack the opponent.
 
   auto const& player_info_list = agent.all_player_info().value().get();
-  auto const& self_info = player_info_list.at(0);
-  auto const& opponent_info = player_info_list.at(1);
+  auto const self_id = agent.self_id().value();
+  auto const& self_info = player_info_list.at(self_id);
+  auto const& opponent_info = player_info_list.at(1 - self_info.id);
 
   auto const& map = agent.map().value().get();
 
@@ -61,7 +62,6 @@ void Loop(thuai7_agent::Agent& agent) {
         static_cast<float>(next_position_int.y + kFloatPositionShift)};
 
     agent.Move(next_position);
-    spdlog::info("move to {}", next_position);
 
     return;
   }

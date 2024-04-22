@@ -20,7 +20,7 @@ struct Options {
 
 constexpr auto kDefaultServer = "ws://localhost:14514";
 constexpr auto kDefaultToken = "1919810";
-constexpr auto kLoopInterval = 1000;  // In milliseconds.
+constexpr auto kLoopInterval = 100;  // In milliseconds.
 
 auto ParseOptions(int argc, char** argv) -> std::optional<Options> {
   cxxopts::Options options("agent");
