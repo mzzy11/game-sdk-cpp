@@ -59,7 +59,9 @@ class Agent {
   }
 
   [[nodiscard]] auto safe_zone() const
-      -> std::optional<std::reference_wrapper<SafeZone const>>;
+      -> std::optional<std::reference_wrapper<SafeZone const>> {
+    return safe_zone_;
+  }
 
   [[nodiscard]] auto self_id() const -> std::optional<int> { return self_id_; }
 
