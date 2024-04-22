@@ -4,11 +4,15 @@
 #include <hv/EventLoop.h>
 #include <hv/WebSocketClient.h>
 #include <hv/hloop.h>
+#include <spdlog/spdlog.h>
 
 #include <string>
 #include <string_view>
 
+#include "agent/map.h"
 #include "agent/message.h"
+#include "agent/player_info.h"
+#include "agent/position.h"
 #include "agent/supply.h"
 #include "hv/Event.h"
 
@@ -89,7 +93,56 @@ void Agent::Loop() {
 }
 
 void Agent::OnMessage(Message const& message) {
-  // TODO(ethkuil): Parse message.
+  auto msg_dict = message.msg;
+  try {
+    auto msg_type = msg_dict["messageType"].get<std::string>();
+
+    if (msg_type == "ERROR") {
+      spdlog::error("error from server: {}",
+                    msg_dict["message"].get<std::string>());
+    } else if (msg_type == "PLAYERS_INFO") {
+      for (auto const& data : msg_dict["players"]) {
+        auto id = data["playerId"].get<int>();
+        auto armor = data["armor"].get<ArmorKind>();
+        auto health = data["health"].get<int>();
+        auto speed = data["speed"].get<float>();
+        auto firearm = data["firearm"]["name"].get<FirearmKind>();
+        auto range = data["firearm"]["distance"].get<float>();
+        Position<float> position(data["position"]["x"].get<float>(),
+                                 data["position"]["y"].get<float>());
+        std::vector<Item> inventory;
+        for (auto const& msg_item : data["inventory"]) {
+          inventory.emplace_back(Item(msg_item["name"].get<ItemKind>(),
+                                      msg_item["num"].get<int>()));
+        }
+        all_player_info_->emplace_back(PlayerInfo(
+            id, armor, health, speed, firearm, range, position, inventory));
+      }
+    } else if (msg_type == "MAP") {
+      auto length = msg_dict["length"].get<int>();
+      std::vector<Position<int>> walls;
+      for (auto const& msg_wall : msg_dict["walls"]) {
+        walls.emplace_back(Position(msg_wall["wallPositions"]["x"].get<int>(),
+                                    msg_wall["wallPositions"]["y"].get<int>()));
+      }
+      map_ = Map(length, walls);
+    } else if (msg_type == "SUPPLIES") {
+      for (auto const& msg_supply : msg_dict["supplies"]) {
+        auto kind = msg_supply["name"].get<SupplyKind>();
+        Position<float> position(msg_supply["position"]["x"].get<float>(),
+                                 msg_supply["position"]["y"].get<float>());
+        auto count = msg_supply["numb"].get<int>();
+        supplies_->emplace_back(Supply{kind, count, position});
+      }
+    } else if (msg_type == "SAFE_ZONE") {
+      Position<float> center(msg_dict["center"]["x"].get<float>(),
+                             msg_dict["center"]["y"].get<float>());
+      auto radius = msg_dict["radius"].get<float>();
+      safe_zone_ = SafeZone(center, radius);
+    }
+  } catch (std::exception const& e) {
+    spdlog::error("error occurred in message handling: {}", e.what());
+  }
 }
 
 auto format_as(Agent const& object) -> std::string {
