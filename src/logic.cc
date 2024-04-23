@@ -62,7 +62,7 @@ void Loop(thuai7_agent::Agent& agent) {
         static_cast<float>(next_position_int.y + kFloatPositionShift)};
 
     agent.Move(next_position);
-
+    spdlog::info("moving from {} to {}", self_info.position, next_position);
     return;
   }
 
