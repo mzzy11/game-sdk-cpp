@@ -130,7 +130,7 @@ void Agent::OnMessage(Message const& message) {
       auto length = msg_dict["length"].get<int>();
       std::vector<Position<int>> walls;
       for (auto const& msg_wall : msg_dict["walls"]) {
-        walls.emplace_back(Position{msg_wall["wallPositions"]["x"].get<int>(),
+        walls.emplace_back(Position<int>{msg_wall["wallPositions"]["x"].get<int>(),
                                     msg_wall["wallPositions"]["y"].get<int>()});
       }
       map_ = Map(length, walls);
