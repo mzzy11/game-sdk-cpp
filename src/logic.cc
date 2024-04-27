@@ -40,8 +40,9 @@ void Loop(thuai7_agent::Agent& agent) {
                                   static_cast<int>(opponent_info.position.y)};
 
   if (std::find(state.path.begin(), state.path.end(), self_position_int) ==
-      state.path.end() || std::find(state.path.begin(), state.path.end(),
-      opponent_position_int) == state.path.end()) {
+          state.path.end() ||
+      std::find(state.path.begin(), state.path.end(), opponent_position_int) ==
+          state.path.end()) {
     state.path = FindPathBeFS(map, self_position_int, opponent_position_int);
 
     if (state.path.empty()) {
