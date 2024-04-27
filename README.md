@@ -43,6 +43,12 @@ Run the following command to start the agent:
 ./agent --server <server> --token <token>
 ```
 
+Or pass the arguments with environment variables:
+
+```bash
+SERVER_ADDRESS=<server> TOKEN=<token> ./agent
+```
+
 - `<server>`: The server address of the game. (Default: `ws://localhost:14514`)
 - `<token>`: The token of the agent. (Default: `1919810`)
 
@@ -50,6 +56,10 @@ For example:
 
 ```bash
 ./agent --server ws://localhost:14514 --token 1919810
+```
+
+```bash
+SERVER_ADDRESS=ws://server:14514 TOKEN=1919810 ./agent
 ```
 
 ## Contributing

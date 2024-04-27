@@ -4,6 +4,7 @@
 #include <spdlog/common.h>
 #include <spdlog/spdlog.h>
 
+#include <cstdlib>
 #include <cxxopts.hpp>
 #include <optional>
 #include <string>
@@ -23,13 +24,23 @@ constexpr auto kDefaultToken = "1919810";
 constexpr auto kLoopInterval = 100;  // In milliseconds.
 
 auto ParseOptions(int argc, char** argv) -> std::optional<Options> {
+  std::string server{kDefaultServer};
+  std::string token{kDefaultToken};
+  // NOLINTBEGIN(concurrency-mt-unsafe)
+  if (auto const* env_server = std::getenv("SERVER_ADDRESS")) {
+    server = env_server;
+  }
+  if (auto const* env_token = std::getenv("TOKEN")) {
+    token = env_token;
+  }
+  // NOLINTEND(concurrency-mt-unsafe)
+
   cxxopts::Options options("agent");
-  options.add_options()(
-      "server", "Server address",
-      cxxopts::value<std::string>()->default_value(kDefaultServer))(
+  options.add_options()("server", "Server address",
+                        cxxopts::value<std::string>()->default_value(server))(
       "token", "Agent token",
-      cxxopts::value<std::string>()->default_value(kDefaultToken))(
-      "h,help", "Print usage");
+      cxxopts::value<std::string>()->default_value(token))("h,help",
+                                                           "Print usage");
   auto result = options.parse(argc, argv);
 
   if (result.count("help") > 0) {
@@ -37,9 +48,12 @@ auto ParseOptions(int argc, char** argv) -> std::optional<Options> {
     return std::nullopt;
   }
 
+  server = result["server"].as<std::string>();
+  token = result["token"].as<std::string>();
+
   return Options{
-      .server = result["server"].as<std::string>(),
-      .token = result["token"].as<std::string>(),
+      .server = server,
+      .token = token,
   };
 }
 
