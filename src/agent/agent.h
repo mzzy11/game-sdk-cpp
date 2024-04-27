@@ -70,8 +70,7 @@ class Agent {
 
   void Abandon(SupplyKind target_supply, int count);
 
-  void PickUp(SupplyKind target_supply, int count,
-              Position<float> const& position);
+  void PickUp(SupplyKind target_supply, int count);
 
   void SwitchFirearm(FirearmKind target_firearm);
 

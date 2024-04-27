@@ -69,14 +69,11 @@ struct PerformAbandonMessage : public Message {
 
 struct PerformPickUpMessage : public Message {
   PerformPickUpMessage(const std::string& token,
-                       const SupplyKind& target_supply, int num,
-                       const Position<float>& target_position) {
+                       const SupplyKind& target_supply, int num) {
     msg["messageType"] = "PERFORM_PICK_UP";
     msg["token"] = token;
     msg["targetSupply"] = target_supply;
     msg["num"] = num;
-    msg["targetPosition"] = {{"x", target_position.x},
-                             {"y", target_position.y}};
   }
 };
 

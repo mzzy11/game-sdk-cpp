@@ -58,10 +58,9 @@ void Agent::Abandon(SupplyKind target_supply, int count) {
   ws_client_->send(PerformAbandonMessage(count, token_, target_supply).json());
 }
 
-void Agent::PickUp(SupplyKind target_supply, int count,
-                   Position<float> const& position) {
+void Agent::PickUp(SupplyKind target_supply, int count) {
   ws_client_->send(
-      PerformPickUpMessage(token_, target_supply, count, position).json());
+      PerformPickUpMessage(token_, target_supply, count).json());
 }
 
 void Agent::SwitchFirearm(FirearmKind target_firearm) {
