@@ -8,5 +8,6 @@ RUN ~/.local/bin/xmake f -m release -v -y --root \
  && ~/.local/bin/xmake -v --root
 
 FROM gcr.io/distroless/cc-debian12
-COPY --from=build-env /app/bin/agent /agent
-ENTRYPOINT ["/agent"]
+WORKDIR /app
+COPY --from=build-env /app/bin/agent .
+ENTRYPOINT ["./agent"]
