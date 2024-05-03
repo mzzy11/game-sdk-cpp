@@ -100,8 +100,14 @@ void Agent::ChooseOrigin(Position<float> const& position) {
 }
 
 void Agent::Loop() {
-  if (IsConnected()) {
+  try {
+    if (!IsConnected()) {
+      return;
+    }
+
     ws_client_->send(GetPlayerInfoMessage(token_).json());
+  } catch (std::exception const& e) {
+    spdlog::error("{} encountered an error in loop: {}", *this, e.what());
   }
 }
 
@@ -111,7 +117,7 @@ void Agent::OnMessage(Message const& message) {
     auto msg_type = msg_dict["messageType"].get<std::string>();
 
     if (msg_type == "ERROR") {
-      spdlog::error("error from server: {}",
+      spdlog::error("{} got an error from server: {}", *this,
                     msg_dict["message"].get<std::string>());
     } else if (msg_type == "PLAYERS_INFO") {
       all_player_info_ = std::vector<PlayerInfo>();
@@ -162,7 +168,7 @@ void Agent::OnMessage(Message const& message) {
     }
 
   } catch (std::exception const& e) {
-    spdlog::error("error occurred in message handling: {}", e.what());
+    spdlog::error("{} failed to handle a message: {}", *this, e.what());
   }
 }
 
