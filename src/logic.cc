@@ -46,11 +46,13 @@ void Loop(thuai7_agent::Agent& agent) {
     state.path = FindPathBeFS(map, self_position_int, opponent_position_int);
 
     if (state.path.empty()) {
-      spdlog::info("no path found");
+      spdlog::info("no path from {} to {}", self_position_int,
+                   opponent_position_int);
       return;
     }
 
-    spdlog::info("path: {}", state.path);
+    spdlog::info("found path from {} to {}", self_position_int,
+                 opponent_position_int);
   }
 
   while (state.path.front() != self_position_int) {
@@ -64,7 +66,6 @@ void Loop(thuai7_agent::Agent& agent) {
         static_cast<float>(next_position_int.y + kFloatPositionShift)};
 
     agent.Move(next_position);
-    spdlog::info("moving from {} to {}", self_info.position, next_position);
     return;
   }
 
