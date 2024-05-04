@@ -7,7 +7,7 @@ COPY . .
 RUN ~/.local/bin/xmake f -m release -v -y --root \
  && ~/.local/bin/xmake -v --root
 
-FROM gcr.io/distroless/cc-debian12
+FROM gcr.nju.edu.cn/distroless/cc-debian12
 WORKDIR /app
 COPY --from=build-env /app/bin/agent .
 ENTRYPOINT ["./agent"]
