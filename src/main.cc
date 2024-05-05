@@ -27,7 +27,7 @@ auto ParseOptions(int argc, char** argv) -> std::optional<Options> {
   std::string server{kDefaultServer};
   std::string token{kDefaultToken};
   // NOLINTBEGIN(concurrency-mt-unsafe)
-  if (auto const* env_server = std::getenv("SERVER_ADDRESS")) {
+  if (auto const* env_server = std::getenv("SERVER")) {
     server = env_server;
   }
   if (auto const* env_token = std::getenv("TOKEN")) {
