@@ -16,7 +16,7 @@ namespace thuai7_agent {
 NLOHMANN_JSON_SERIALIZE_ENUM(SupplyKind,
                              {
                                  {SupplyKind::kS686, "S686"},
-                                 {SupplyKind::kVectory, "VECTORY"},
+                                 {SupplyKind::kVector, "VECTOR"},
                                  {SupplyKind::kAwm, "AWM"},
                                  {SupplyKind::kM16, "M16"},
                                  {SupplyKind::kBullet, "BULLET"},
@@ -29,7 +29,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(SupplyKind,
 
 NLOHMANN_JSON_SERIALIZE_ENUM(FirearmKind, {
                                               {FirearmKind::kS686, "S686"},
-                                              {FirearmKind::kVector, "VECTORY"},
+                                              {FirearmKind::kVector, "VECTOR"},
                                               {FirearmKind::kAwm, "AWM"},
                                               {FirearmKind::kM16, "M16"},
                                           });
