@@ -26,6 +26,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(SupplyKind,
                                  {SupplyKind::kFirstAid, "FIRST_AID"},
                                  {SupplyKind::kGrenade, "GRENADE"},
                              });
+NLOHMANN_JSON_SERIALIZE_ENUM(ItemKind, {
+                                           {ItemKind::kBandage, "BANDAGE"},
+                                           {ItemKind::kFirstAid, "FIRST_AID"},
+                                           {ItemKind::kBullet, "BULLET"},
+                                           {ItemKind::kGrenade, "GRENADE"},
+                                       });
 
 NLOHMANN_JSON_SERIALIZE_ENUM(FirearmKind, {
                                               {FirearmKind::kS686, "S686"},
