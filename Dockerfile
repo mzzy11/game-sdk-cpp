@@ -4,7 +4,7 @@ FROM gcc:12.3.0 AS build-env
 WORKDIR /app
 RUN curl -fsSL https://xmake.io/shget.text | bash
 RUN CURRENT_IP=$(curl -s https://ifconfig.me/ip) \
- && IP_COUNTRY=$(curl -s https://ipinfo.io/$CURRENT_IP/country)
+ && IP_COUNTRY=$(curl -s https://ipinfo.io/$CURRENT_IP/country) \
  && if [ "$IP_COUNTRY" = "CN" ]; then \
       ~/.local/bin/xmake g --proxy_pac=github_mirror.lua --root \
     fi
