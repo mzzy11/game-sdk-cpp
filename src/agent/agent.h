@@ -110,8 +110,3 @@ auto format_as(Agent const& object) -> std::string;
 }  // namespace thuai7_agent
 
 #endif  // THUAI7_AGENT_AGENT_H_
-
-
-}  // namespace thuai7_agent
-
-#endif  // THUAI7_AGENT_AGENT_H_
