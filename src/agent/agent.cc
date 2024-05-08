@@ -141,9 +141,10 @@ void Agent::OnMessage(Message const& message) {
           inventory.emplace_back(Item{msg_item["name"].get<ItemKind>(),
                                       msg_item["num"].get<int>()});
         }
-        all_player_info_->emplace_back(PlayerInfo{player_id, armor, current_armor_health, health, speed, 
-                                                  firearm, firearms_pool, range, 
-                                                  position, inventory});
+        all_player_info_->emplace_back(
+          PlayerInfo{player_id, armor, current_armor_health, health,
+                     speed, firearm, firearms_pool, range,
+                     position, inventory});
       }
     } else if (msg_type == "MAP") {
       auto length = msg_dict["length"].get<int>();
