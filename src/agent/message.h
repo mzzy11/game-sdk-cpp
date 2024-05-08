@@ -34,6 +34,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ItemKind, {
                                        });
 
 NLOHMANN_JSON_SERIALIZE_ENUM(FirearmKind, {
+                                              {FirearmKind::kFist, "FIST"},
                                               {FirearmKind::kS686, "S686"},
                                               {FirearmKind::kVector, "VECTOR"},
                                               {FirearmKind::kAwm, "AWM"},
