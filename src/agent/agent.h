@@ -66,6 +66,8 @@ class Agent {
 
   [[nodiscard]] auto self_id() const -> std::optional<int> { return self_id_; }
 
+  [[nodiscard]] auto ticks() const -> std::optional<int> { return ticks_; }
+
   [[nodiscard]] auto IsGameReady() const -> bool;
 
   void Abandon(SupplyKind target_supply, int count);
@@ -99,10 +101,16 @@ class Agent {
   std::optional<std::vector<Supply>> supplies_;
   std::optional<SafeZone> safe_zone_;
   std::optional<int> self_id_;
+  std::optional<int> ticks_;
   std::string token_;
 };
 
 auto format_as(Agent const& object) -> std::string;
+
+}  // namespace thuai7_agent
+
+#endif  // THUAI7_AGENT_AGENT_H_
+
 
 }  // namespace thuai7_agent
 
