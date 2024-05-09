@@ -6,6 +6,7 @@
 #include "agent/agent.h"
 #include "agent/position.h"
 #include "path_finding.h"
+#include "shot_check.h"
 
 constexpr auto kFloatPositionShift = 0.5;
 
@@ -69,5 +70,8 @@ void Loop(thuai7_agent::Agent& agent) {
     return;
   }
 
-  agent.Attack(opponent_info.position);
+  if (CheckShotFeasible(map, self_info.position, opponent_info.position,
+                        self_info.range)) {
+    agent.Attack(opponent_info.position);
+  }
 }
