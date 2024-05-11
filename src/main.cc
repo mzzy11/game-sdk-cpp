@@ -120,9 +120,8 @@ auto main(int argc, char* argv[]) -> int {
         spdlog::info("{} is setup", agent);
 
       } catch (std::exception const& err) {
-#ifdef NDEBUG
         spdlog::error("an error occurred in Setup({}): {}", agent, err.what());
-#else
+#ifndef NDEBUG
         throw;
 #endif
       }
@@ -134,9 +133,8 @@ auto main(int argc, char* argv[]) -> int {
       Loop(agent);
 
     } catch (std::exception const& err) {
-#ifdef NDEBUG
       spdlog::error("an error occurred in Loop({}): {}", agent, err.what());
-#else
+#ifndef NDEBUG
       throw;
 #endif
     }
