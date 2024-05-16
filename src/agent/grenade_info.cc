@@ -7,7 +7,7 @@
 namespace thuai7_agent {
 
 auto format_as(GrenadeInfo const& object) -> std::string {
-  return fmt::format("GrenadeInfo{{throwTick: {}, evaluatedPosition: {}}}", 
+  return fmt::format("GrenadeInfo{{throwTick: {}, evaluatedPosition: {}}}",
                       object.throwTick, object.evaluatedPosition);
 }
 
