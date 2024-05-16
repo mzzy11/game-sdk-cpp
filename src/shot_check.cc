@@ -19,8 +19,9 @@ auto CheckShotFeasible(thuai7_agent::Map const& map,
   if (distance > shot_range) {
     return false;
   }
-  
-  auto map_grid = std::vector<std::vector<bool>> (map.length, std::vector<bool>(map.length, false));
+
+  auto map_grid = std::vector<std::vector<bool>>(
+      map.length, std::vector<bool>(map.length, false));
   for (auto const& obstacle : map.obstacles) {
     map_grid.at(obstacle.x).at(obstacle.y) = true;
   }
@@ -31,9 +32,9 @@ auto CheckShotFeasible(thuai7_agent::Map const& map,
         shooter_position.x + delta_x * delta_distance / distance,
         shooter_position.y + delta_y * delta_distance / distance};
 
-    auto const current_grid_position = thuai7_agent::Position<int>{
-        static_cast<int>(current_position.x),
-        static_cast<int>(current_position.y)};
+    auto const current_grid_position =
+        thuai7_agent::Position<int>{static_cast<int>(current_position.x),
+                                    static_cast<int>(current_position.y)};
     if (map_grid.at(current_grid_position.x).at(current_grid_position.y)) {
       return false;
     }
