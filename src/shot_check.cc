@@ -1,15 +1,12 @@
 #include "shot_check.h"
 
 #include <cmath>
+#include <vector>
 
 #include "agent/map.h"
 #include "agent/position.h"
 
 constexpr float kSearchStep = 0.1F;
-
-static auto CheckPointAndUnitSquareIntersection(
-    thuai7_agent::Position<float> const& point_position,
-    thuai7_agent::Position<float> const& unit_square_min_position) -> bool;
 
 auto CheckShotFeasible(thuai7_agent::Map const& map,
                        thuai7_agent::Position<float> const& shooter_position,
@@ -22,6 +19,11 @@ auto CheckShotFeasible(thuai7_agent::Map const& map,
   if (distance > shot_range) {
     return false;
   }
+  
+  auto map_grid = std::vector<std::vector<bool>> (map.length, std::vector<bool>(map.length, false));
+  for (auto const& obstacle : map.obstacles) {
+    map_grid.at(obstacle.x).at(obstacle.y) = true;
+  }
 
   for (float delta_distance = 0.0F; delta_distance < distance;
        delta_distance += kSearchStep) {
@@ -29,27 +31,13 @@ auto CheckShotFeasible(thuai7_agent::Map const& map,
         shooter_position.x + delta_x * delta_distance / distance,
         shooter_position.y + delta_y * delta_distance / distance};
 
-    for (auto const& obstacle : map.obstacles) {
-      auto const obstacle_position_float = thuai7_agent::Position<float>{
-          static_cast<float>(obstacle.x), static_cast<float>(obstacle.y)};
-      if (CheckPointAndUnitSquareIntersection(current_position,
-                                              obstacle_position_float)) {
-        return false;
-      }
+    auto const current_grid_position = thuai7_agent::Position<int>{
+        static_cast<int>(current_position.x),
+        static_cast<int>(current_position.y)};
+    if (map_grid.at(current_grid_position.x).at(current_grid_position.y)) {
+      return false;
     }
   }
 
   return true;
-}
-
-static auto CheckPointAndUnitSquareIntersection(
-    thuai7_agent::Position<float> const& point_position,
-    thuai7_agent::Position<float> const& unit_square_min_position) -> bool {
-  float x_min = unit_square_min_position.x;
-  float y_min = unit_square_min_position.y;
-  float x_max = x_min + 1.0F;
-  float y_max = y_min + 1.0F;
-
-  return point_position.x >= x_min && point_position.x <= x_max &&
-         point_position.y >= y_min && point_position.y <= y_max;
 }
