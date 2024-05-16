@@ -177,9 +177,8 @@ void Agent::OnMessage(Message const& message) {
       grenade_info_ = std::vector<GrenadeInfo>();
       for (auto const& msg_grenade : msg_dict["grenades"]) {
         auto throwTick = msg_grenade["throwTick"].get<int>();
-        Position<float> position {
-          msg_grenade["evaluatedPosition"]["x"].get<float>(),
-          msg_grenade["evaluatedPosition"]["y"].get<float>()
+        Position<float> position{msg_grenade["evaluatedPosition"]["x"].get<float>(),
+                                 msg_grenade["evaluatedPosition"]["y"].get<float>()
         };
 
         grenade_info_->emplace_back(GrenadeInfo{throwTick, position});
