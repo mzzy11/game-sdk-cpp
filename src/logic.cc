@@ -17,28 +17,7 @@ static struct {
 // NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
 void Setup(thuai7_agent::Agent& agent) {
-  auto const& supplies = agent.supplies();
-  auto supply_vector = supplies->get();
-  int i=0;
-  for(;i<supply_vector.size();i++){
-    if(supply_vector[i].kind!=thuai7_agent::SupplyKind::kGrenade)
-      continue;
-    else break;
-  }
-  spdlog::info("{}",supply_vector[i].position);
-  agent.ChooseOrigin(supply_vector[i].position);
   // Your code here.
-}
-
-int Check(thuai7_agent::Position<int> position,std::vector<thuai7_agent::Supply> supply){
-  for(int i=0;i<supply.size();i++){
-      auto s_position_int =
-      thuai7_agent::Position<int>{static_cast<int>(supply[i].position.x),
-                                  static_cast<int>(supply[i].position.y)};
-      if(position==s_position_int)
-        return i;
-  }
-  return -1;
 }
 
 void Loop(thuai7_agent::Agent& agent) {
@@ -52,8 +31,6 @@ void Loop(thuai7_agent::Agent& agent) {
   auto const& self_info = player_info_list.at(self_id);
   auto const& opponent_info = player_info_list.at(1 - self_info.id);
 
-  auto const& supplies = agent.supplies();
-  auto supply_vector = supplies->get();
   auto const& map = agent.map().value().get();
 
   auto self_position_int =
@@ -84,25 +61,13 @@ void Loop(thuai7_agent::Agent& agent) {
   }
 
   if (state.path.size() > 1) {
-      if (state.path.size() > 1) {
     auto next_position_int = state.path.at(1);
     auto next_position = thuai7_agent::Position<float>{
         static_cast<float>(next_position_int.x + kFloatPositionShift),
         static_cast<float>(next_position_int.y + kFloatPositionShift)};
-    if(Check(self_position_int,supply_vector)!=-1){
-        spdlog::info("pick");
-        int i=Check(self_position_int,supply_vector);
-        spdlog::info("{}",i);
-        agent.PickUp(supply_vector[i].kind,supply_vector[i].count);
-        auto players_info = agent.all_player_info();
-        spdlog::info("{}",players_info->get());
-    }
-    agent.UseGrenade(next_position);
-    auto gre = agent.grenade_info()->get();
-    spdlog::info("{}",gre);
-    //spdlog::info("moving from {} to {}", self_info.position, next_position);
+
+    agent.Move(next_position);
     return;
-  }
   }
 
   if (CheckShotFeasible(map, self_info.position, opponent_info.position,
